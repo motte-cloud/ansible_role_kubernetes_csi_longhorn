@@ -2,25 +2,9 @@
 
 An Ansible role for installing and configuring Longhorn as a Container Storage Interface (CSI) for Kubernetes using Helm.
 
-## Role Structure
+## Overview
 
-```plaintext
-ansible_role_kubernetes_csi_longhorn/
-├── defaults/
-│   └── main.yml
-├── tasks/
-│   ├── main.yml
-│   ├── os_prepare.yml
-│   ├── verify_prerequisites.yml
-│   └── deploy_helm.yml
-├── templates/
-├── files/
-├── meta/
-│   └── main.yml
-└── README.md
-```
-
----
+This role automates the installation and configuration of Longhorn, ensuring that system-managed components run on control plane nodes and user-managed components run on worker nodes.
 
 ## Requirements
 
@@ -36,14 +20,20 @@ This role is optimized for **Ubuntu 24.04 LTS** and requires the following compo
    - `lsblk`
 4. Network and DNS functionality must be fully configured.
 
----
+## Role Variables
 
-## Variables
+### `longhorn_helm_values`
 
-### `defaults/main.yml`
+This dictionary contains key configuration settings for Longhorn:
+
+- `minimalAvailablePercentage`: Defines the minimum storage percentage that must remain available. Default: `25%`.
+- `overProvisioningPercentage`: Defines the over-provisioning percentage. Default: `100%`.
+- `systemManagedComponents.nodeSelector`: Ensures system components run on control plane nodes.
+- `userManagedComponents.nodeSelector`: Ensures user components run on worker nodes.
+
+Example:
 
 ```yaml
-# Helm chart configuration values
 longhorn_helm_values:
   minimalAvailablePercentage: 25
   overProvisioningPercentage: 100
@@ -53,10 +43,21 @@ longhorn_helm_values:
   userManagedComponents:
     nodeSelector:
       node-role.kubernetes.io/worker: "true"
-
-# Minimum Kubernetes version
-kubernetes_min_version: "1.25"
 ```
+
+## Tasks
+
+### 1. Operating System Preparation
+
+Installs necessary dependencies and enables required services.
+
+### 2. Verify Prerequisites
+
+Ensures that the Kubernetes version is supported and all required tools are installed.
+
+### 3. Deploy Longhorn via Helm
+
+Adds the Longhorn Helm repository and installs the Longhorn Helm chart with the defined settings.
 
 ## Usage
 
@@ -83,8 +84,6 @@ kubernetes_min_version: "1.25"
        - role: ansible_role_kubernetes_csi_longhorn
    ```
 
----
+## Additional Notes
 
-## Suggestions for Improvement
-
-If you have additional requirements or use cases, feel free to create an issue or submit a pull request in the repository.
+For a complete list of available Helm chart values, refer to the [Longhorn Helm Chart documentation](https://github.com/longhorn/charts/blob/v1.8.x/charts/longhorn/README.md#configuration).
