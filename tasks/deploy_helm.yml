@@ -14,4 +14,8 @@
       defaultSettings:
         minimalAvailablePercentage: "{{ longhorn_helm_values.minimalAvailablePercentage }}"
         overProvisioningPercentage: "{{ longhorn_helm_values.overProvisioningPercentage }}"
+      systemManagedComponents:
+        nodeSelector: "{{ longhorn_helm_values.systemManagedComponents.nodeSelector }}"
+      userManagedComponents:
+        nodeSelector: "{{ longhorn_helm_values.userManagedComponents.nodeSelector }}"
     update_repo_cache: yes

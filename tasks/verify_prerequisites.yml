@@ -8,14 +8,3 @@
   ansible.builtin.fail:
     msg: "Kubernetes version {{ kubernetes_version.stdout }} is below the required version {{ kubernetes_min_version }}."
   when: kubernetes_version.stdout is version(kubernetes_min_version, '<')
-
-- name: Check container runtime installation
-  ansible.builtin.shell: |
-    {{ container_runtime }} --version
-  register: runtime_check
-  changed_when: false
-
-- name: Fail if container runtime is not installed
-  ansible.builtin.fail:
-    msg: "Container runtime {{ container_runtime }} is not installed or the version is below {{ container_runtime_version }}."
-  when: runtime_check.stdout is not regex(container_runtime_version)

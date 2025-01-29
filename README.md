@@ -47,97 +47,16 @@ This role is optimized for **Ubuntu 24.04 LTS** and requires the following compo
 longhorn_helm_values:
   minimalAvailablePercentage: 25
   overProvisioningPercentage: 100
-
-# Container runtime details
-container_runtime: "containerd"
-container_runtime_version: "1.3.7"
+  systemManagedComponents:
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+  userManagedComponents:
+    nodeSelector:
+      node-role.kubernetes.io/worker: "true"
 
 # Minimum Kubernetes version
 kubernetes_min_version: "1.25"
 ```
-
----
-
-## Tasks
-
-### 1. Operating System Preparation
-
-File: `tasks/os_prepare.yml`
-
-```yaml
-- name: Install necessary packages for Longhorn
-  ansible.builtin.apt:
-    name:
-      - open-iscsi
-      - nfs-common
-      - bash
-      - curl
-      - grep
-      - awk
-      - lsblk
-    state: present
-    update_cache: yes
-
-- name: Enable and start iscsid service
-  ansible.builtin.systemd:
-    name: iscsid
-    enabled: true
-    state: started
-```
-
-### 2. Verify Prerequisites
-
-File: `tasks/verify_prerequisites.yml`
-
-```yaml
-- name: Check Kubernetes version
-  ansible.builtin.shell: |
-    kubectl version --output=json | jq -r '.serverVersion.gitVersion' | cut -c 2-
-  register: kubernetes_version
-  changed_when: false
-
-- name: Fail if Kubernetes version is below minimum requirement
-  ansible.builtin.fail:
-    msg: "Kubernetes version {{ kubernetes_version.stdout }} is below the required version {{ kubernetes_min_version }}."
-  when: kubernetes_version.stdout is version(kubernetes_min_version, '<')
-
-- name: Check container runtime installation
-  ansible.builtin.shell: |
-    {{ container_runtime }} --version
-  register: runtime_check
-  changed_when: false
-
-- name: Fail if container runtime is not installed
-  ansible.builtin.fail:
-    msg: "Container runtime {{ container_runtime }} is not installed or the version is below {{ container_runtime_version }}."
-  when: runtime_check.stdout is not regex(container_runtime_version)
-```
-
-### 3. Deploy Longhorn via Helm
-
-File: `tasks/deploy_helm.yml`
-
-```yaml
-- name: Add Longhorn Helm repository
-  ansible.builtin.shell: |
-    helm repo add longhorn https://charts.longhorn.io && helm repo update
-  args:
-    warn: false
-
-- name: Install Longhorn CSI Helm chart
-  community.kubernetes.helm:
-    name: longhorn
-    chart: longhorn/longhorn
-    namespace: longhorn-system
-    create_namespace: true
-    values:
-      defaultSettings:
-        minimalAvailablePercentage: "{{ longhorn_helm_values.minimalAvailablePercentage }}"
-        overProvisioningPercentage: "{{ longhorn_helm_values.overProvisioningPercentage }}"
-    update_repo_cache: yes
-```
-
----
 
 ## Usage
 
@@ -168,4 +87,4 @@ File: `tasks/deploy_helm.yml`
 
 ## Suggestions for Improvement
 
-If you have additional requirements or use cases, feel free to create an issue or submit a pull request in this repository.
+If you have additional requirements or use cases, feel free to create an issue or submit a pull request in the repository.

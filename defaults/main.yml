@@ -1,11 +1,13 @@
-# Helm-Chart Konfigurationswerte
+# Helm chart configuration values
 longhorn_helm_values:
   minimalAvailablePercentage: 25
   overProvisioningPercentage: 100
+  systemManagedComponents:
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+  userManagedComponents:
+    nodeSelector:
+      node-role.kubernetes.io/worker: "true"
 
-# Container-Runtime-Details
-container_runtime: "containerd"
-container_runtime_version: "1.3.7"
-
-# Kubernetes Mindestversion
+# Minimum Kubernetes version
 kubernetes_min_version: "1.25"
