@@ -64,7 +64,7 @@ Adds the Longhorn Helm repository and installs the Longhorn Helm chart with the 
 1. Add the role to your `requirements.yml`:
 
    ```yaml
-   - src: https://github.com/your-repo/ansible_role_kubernetes_csi_longhorn.git
+   - src: https://github.com/motte-cloud/ansible_role_kubernetes_csi_longhorn.git
      scm: git
      version: main
      name: ansible_role_kubernetes_csi_longhorn
