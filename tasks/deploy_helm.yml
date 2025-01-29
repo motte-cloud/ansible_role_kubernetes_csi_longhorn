@@ -1,0 +1,17 @@
+- name: Add Longhorn Helm repository
+  ansible.builtin.shell: |
+    helm repo add longhorn https://charts.longhorn.io && helm repo update
+  args:
+    warn: false
+
+- name: Install Longhorn CSI Helm chart
+  community.kubernetes.helm:
+    name: longhorn
+    chart: longhorn/longhorn
+    namespace: longhorn-system
+    create_namespace: true
+    values:
+      defaultSettings:
+        minimalAvailablePercentage: "{{ longhorn_helm_values.minimalAvailablePercentage }}"
+        overProvisioningPercentage: "{{ longhorn_helm_values.overProvisioningPercentage }}"
+    update_repo_cache: yes

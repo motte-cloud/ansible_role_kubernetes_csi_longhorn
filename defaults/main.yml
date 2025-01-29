@@ -1,0 +1,11 @@
+# Helm-Chart Konfigurationswerte
+longhorn_helm_values:
+  minimalAvailablePercentage: 25
+  overProvisioningPercentage: 100
+
+# Container-Runtime-Details
+container_runtime: "containerd"
+container_runtime_version: "1.3.7"
+
+# Kubernetes Mindestversion
+kubernetes_min_version: "1.25"

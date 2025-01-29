@@ -1,0 +1,11 @@
+galaxy_info:
+  author: Christian Ludwig
+  description: Installs and configures Longhorn as a CSI for Kubernetes.
+  license: MIT
+  min_ansible_version: 2.11
+  platforms:
+    - name: Ubuntu
+      versions:
+        - "24.04"
+
+dependencies: []
