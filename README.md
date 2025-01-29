@@ -4,7 +4,7 @@ An Ansible role for installing and configuring Longhorn as a Container Storage I
 
 ## Role Structure
 
-```
+```plaintext
 ansible_role_kubernetes_csi_longhorn/
 ├── defaults/
 │   └── main.yml
